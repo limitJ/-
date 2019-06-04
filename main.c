@@ -19,7 +19,7 @@
 #include <memory.h>
 typedef unsigned int uint;
 #define throwException(e) fputs(e,stderr);
-char memory_image[4096];//位镜像
+char memory_image[4096];//位镜像 稍做改动 不乘以1024 方便计算
 typedef struct tag_mem_block {
     int pid;//进程的Pid
     uint start_address;//进程的起始地址
@@ -134,7 +134,7 @@ void showMemImage(){
 }
 int main(void)
 {
-    MemBlock* mb1 = getMemBlock(1, 8);
+    MemBlock* mb1 = getMemBlock(1, 8);//稍微改动 不用乘以1024这个步骤
     MemBlock* mb2 = getMemBlock(2, 32);
     MemBlock* mb3 = getMemBlock(3, 64);
     MemBlock* mb4 = getMemBlock(4, 1024);
