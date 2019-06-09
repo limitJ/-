@@ -8,7 +8,7 @@
  * 运行平台: manjaro linux dde v18.02
  * 编辑器： neovim v0.4
  * C标准: C11
- * 日期: 2019-06-09 22:28 
+ * 日期: 2019-06-09 22:28
  * 水平有限 Bug在所难免！如有错误 还请指正！
  * github: https://github.com/limitJ/-/tree/master
  *
@@ -42,6 +42,10 @@ MemBlock* getMemBlock(int pid,uint mem_size){
     }
     if (mem_size%4 != 0) {
         throwException("错误，分配内存必须是4KB的倍数\n");
+        return NULL;
+    }
+    if(mem_size <= 0){
+        throwException("错误,分配内存至少4KB起步\n");
         return NULL;
     }
     if(list == NULL){
@@ -143,7 +147,6 @@ bool freeMemblock(MemBlock* mb){
         free(mb);
         return true;
     }
-    return false;
 }
 
 void showMemImage(){
@@ -176,14 +179,14 @@ int main(void)
     printf("++++++++++q:按q退出+++++++++++\n");
     printf("++++++++++++++++++++++++++++++\n");
     printf("请选择功能: ");
-    char ch = ' ';
+    char ch;
     int pid = 0;
     uint mem_size = 0;
     while((ch = getchar())!='q'){
         switch (ch) {
             case '1':
                 printf("输入pid号和容量内存(4-4096KB 4的倍数) 输入用空格隔开\n");
-                scanf("%d%d",&pid,&mem_size);
+                scanf("%d%d",&pid,&mem_size); // NOLINT(cert-err34-c)
                 if(getMemBlock(pid, mem_size) == NULL){
                     printf("进程%d申请失败\n",pid);
                 }else{
@@ -192,7 +195,7 @@ int main(void)
                 break;
             case '2':
                 printf("请输入需要kill的进程pid号\n");
-                scanf("%d",&pid);
+                scanf("%d",&pid); // NOLINT(cert-err34-c)
                 bool flag = false;
                 for (MemBlock* temp = list;temp!=NULL;temp=temp->next) {
                     if (temp->pid == pid) {
@@ -217,7 +220,11 @@ int main(void)
                 }
                 break;
             case 'c':
+                #ifdef _WIN32
+                system("cls");
+                #else
                 system("clear");
+                #endif
                 printf("++++++++++++++++++++++++++++++\n");
                 printf("++++++++++请选择功能++++++++++\n");
                 printf("++++++++++1:申请内存++++++++++\n");
